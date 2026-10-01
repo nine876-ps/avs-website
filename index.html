@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alexey von Schlippe – HR System Coach</title>
+  <style>
+    :root {
+      --navy:       #1E3A5F;
+      --navy-dark:  #0D1B2E;
+      --navy-mid:   #2C4D72;
+      --gold:       #C9963A;
+      --gold-light: #E8B85A;
+      --blue-pale:  #EEF3FA;
+      --blue-mid:   #CCDAEE;
+      --white:      #FFFFFF;
+      --text:       #1A2535;
+      --muted:      #4D637F;
+      --border:     #D4DFF0;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    /* ── NAV ─────────────────────────────────── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      height: 70px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5vw;
+      transition: box-shadow .25s;
+    }
+    header.scrolled { box-shadow: 0 2px 24px rgba(30,58,95,.1); }
+
+    .logo {
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-weight: bold;
+      font-size: 2rem;
+      color: var(--navy);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+    .logo span { color: var(--gold); }
+
+    nav ul { list-style: none; display: flex; gap: 2.5rem; align-items: center; }
+    nav a {
+      text-decoration: none;
+      font-size: .92rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: color .2s;
+    }
+    nav a:hover, nav a.active { color: var(--navy); }
+
+    .lang { background: none; border: none; font-size: .88rem; font-weight: 700;
+            color: var(--navy); cursor: pointer; }
+
+    /* ── HERO ────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 70px 5vw 0;
+      position: relative;
+      background:
+        linear-gradient(105deg, rgba(13,27,46,.88) 46%, rgba(13,27,46,.32) 100%),
+        url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=1600&q=80')
+        center / cover no-repeat;
+    }
+
+    .hero-inner { max-width: 640px; }
+
+    .label {
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .16em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .85rem;
+    }
+
+    .hero h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(3rem, 6.5vw, 5.8rem);
+      font-weight: normal;
+      color: var(--white);
+      line-height: 1.02;
+      margin-bottom: 1.4rem;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,.84);
+      max-width: 480px;
+      margin-bottom: 2.4rem;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: .8rem 2rem;
+      border: 2px solid var(--gold);
+      border-radius: 50px;
+      color: var(--white);
+      text-decoration: none;
+      font-size: .93rem; font-weight: 500;
+      transition: background .25s, color .25s;
+      cursor: pointer; background: transparent;
+    }
+    .btn:hover { background: var(--gold); color: var(--navy-dark); }
+    .btn-solid { background: var(--gold); border-color: var(--gold); color: var(--navy-dark); }
+    .btn-solid:hover { background: var(--gold-light); border-color: var(--gold-light); }
+
+    /* ── SHARED SECTION ──────────────────────── */
+    section { padding: 7rem 5vw; }
+
+    h2 {
+      font-family: Georgia, serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: normal;
+      line-height: 1.12;
+      margin-bottom: 1.1rem;
+    }
+
+    .sect-desc {
+      color: var(--muted);
+      max-width: 620px;
+      margin-bottom: 3rem;
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    /* ── QUOTE ───────────────────────────────── */
+    .quote-section {
+      background: var(--blue-pale);
+      padding: 7rem 5vw;
+    }
+    .quote-section blockquote {
+      max-width: 920px; margin: 0 auto;
+      font-family: Georgia, serif;
+      font-size: clamp(1.4rem, 2.4vw, 2rem);
+      font-weight: bold;
+      color: var(--navy);
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    /* ── WEG / HIN ───────────────────────────── */
+    .weg-section { background: var(--white); }
+
+    .dual-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .card-from {
+      background: var(--blue-pale);
+      border-radius: 14px;
+      padding: 2.5rem;
+    }
+    .card-to {
+      background: var(--navy);
+      border-radius: 14px;
+      padding: 2.5rem;
+      color: var(--white);
+    }
+
+    .card-from h3, .card-to h3 {
+      font-family: Georgia, serif;
+      font-size: 1.6rem; font-weight: normal;
+      margin-bottom: 1.5rem;
+    }
+    .card-to h3 { color: var(--white); }
+
+    .dot-list { list-style: none; }
+    .dot-list li {
+      display: flex; gap: .75rem; align-items: baseline;
+      padding: .7rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .95rem;
+    }
+    .card-to .dot-list li {
+      border-bottom-color: rgba(255,255,255,.18);
+      color: rgba(255,255,255,.9);
+    }
+    .dot-list li::before {
+      content: '•'; font-size: .55rem;
+      color: var(--gold); flex-shrink: 0;
+      position: relative; top: -2px;
+    }
+
+    /* ── EVOLUTION ───────────────────────────── */
+    .evolution-section { background: var(--blue-pale); }
+
+    .evol-intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+      margin-bottom: 4rem;
+    }
+    .evol-img {
+      width: 100%; aspect-ratio: 4/3;
+      object-fit: cover; border-radius: 14px;
+      order: 2;
+    }
+    .evol-text { order: 1; }
+    .evol-text .sect-desc { margin-bottom: 0; }
+
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .pillar {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem;
+      display: flex; flex-direction: column;
+      transition: box-shadow .2s;
+    }
+    .pillar:hover { box-shadow: 0 8px 32px rgba(30,58,95,.1); }
+
+    .pillar.wide {
+      grid-column: 1 / -1;
+      background: var(--navy);
+      color: var(--white);
+      flex-direction: row;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .pillar-label {
+      font-size: .68rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem;
+    }
+
+    .pillar-icon {
+      width: 56px; height: 56px;
+      margin: 1.25rem auto;
+    }
+    .pillar.wide .pillar-icon { margin: 0; flex-shrink: 0; }
+
+    .pillar-cta {
+      margin-top: auto;
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--navy); text-decoration: none;
+      transition: color .2s;
+    }
+    .pillar-cta:hover { color: var(--gold); }
+    .pillar.wide .pillar-cta { color: var(--gold-light); }
+
+    /* ── PROCESS ─────────────────────────────── */
+    .process-section { background: var(--white); }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .step-num {
+      font-family: Georgia, serif;
+      font-size: 3.8rem; font-weight: normal;
+      color: var(--gold); line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .step-title { font-weight: 600; font-size: 1rem; margin-bottom: .6rem; }
+    .step-body { font-size: .9rem; color: var(--muted); line-height: 1.65; }
+
+    .timeline {
+      display: flex; align-items: center;
+    }
+    .tl-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%; background: var(--gold); flex-shrink: 0;
+    }
+    .tl-line { flex: 1; height: 1px; background: var(--gold); }
+    .tl-arrow {
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 9px solid var(--gold);
+    }
+
+    /* ── LEISTUNGEN ──────────────────────────── */
+    .leistungen-section { background: var(--blue-pale); }
+
+    .accordion { border-top: 1px solid var(--border); margin-top: 2rem; }
+
+    .acc-item { border-bottom: 1px solid var(--border); }
+
+    .acc-btn {
+      width: 100%;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 0;
+      background: none; border: none;
+      font-size: .98rem; font-weight: 600;
+      color: var(--navy); cursor: pointer;
+      text-align: left; transition: color .2s;
+    }
+    .acc-btn:hover { color: var(--gold); }
+
+    .acc-icon {
+      width: 32px; height: 32px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      color: var(--gold); font-size: 1.25rem;
+      transition: transform .2s;
+      flex-shrink: 0;
+    }
+    .acc-item.open .acc-icon { transform: rotate(45deg); }
+
+    .acc-body {
+      display: none;
+      padding: 0 0 1.2rem;
+      color: var(--muted); font-size: .95rem; line-height: 1.7;
+    }
+    .acc-item.open .acc-body { display: block; }
+
+    /* ── CTA BANNER ──────────────────────────── */
+    .cta-banner {
+      min-height: 280px;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 5rem 5vw;
+      background:
+        linear-gradient(rgba(13,27,46,.78), rgba(13,27,46,.62)),
+        url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1400&q=80')
+        center / cover no-repeat;
+    }
+    .cta-banner h3 {
+      font-family: Georgia, serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: normal; color: var(--white);
+      margin-bottom: 1.8rem;
+    }
+
+    /* ── ÜBER MICH ───────────────────────────── */
+    .ueber-section { background: var(--white); }
+
+    .ueber-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5.5rem;
+      align-items: start;
+      margin-top: 2.5rem;
+    }
+    .ueber-img {
+      width: 100%; aspect-ratio: 3/4;
+      object-fit: cover; object-position: top;
+      border-radius: 14px;
+    }
+    .ueber-text p { color: var(--muted); margin-bottom: 1.25rem; line-height: 1.75; }
+    .linkedin-link {
+      display: inline-flex; align-items: center; gap: .5rem;
+      color: var(--navy); text-decoration: underline;
+      font-size: .95rem; margin-top: .25rem;
+    }
+
+    /* ── WERTE ───────────────────────────────── */
+    .werte-section { background: var(--blue-pale); }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+      margin-top: 3rem;
+    }
+    .value-card { text-align: center; }
+    .value-icon { width: 52px; height: 52px; margin: 0 auto 1.1rem; }
+    .value-title { font-weight: 600; font-size: 1rem; margin-bottom: .6rem; }
+    .value-desc { font-size: .9rem; color: var(--muted); line-height: 1.65; }
+
+    /* ── KONTAKT ─────────────────────────────── */
+    .kontakt-section { background: var(--white); }
+
+    .kontakt-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: start;
+      margin-top: 2.5rem;
+    }
+
+    .form-hint { font-size: .82rem; color: var(--muted); margin-bottom: 1.5rem; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; margin-bottom: 1rem; }
+    .form-group label {
+      font-size: .68rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: .35rem;
+    }
+    .form-group input, .form-group textarea {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .7rem 1rem;
+      font-size: .95rem; color: var(--text);
+      font-family: inherit;
+      transition: border-color .2s;
+      background: var(--white);
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none; border-color: var(--navy);
+    }
+    .form-group textarea { height: 120px; resize: vertical; }
+
+    .btn-submit {
+      display: block; margin-left: auto;
+      padding: .8rem 2.4rem;
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      background: var(--white); color: var(--text);
+      font-size: .93rem; cursor: pointer;
+      transition: background .2s, color .2s, border-color .2s;
+    }
+    .btn-submit:hover { background: var(--navy); color: var(--white); border-color: var(--navy); }
+
+    .contact-sidebar p { color: var(--muted); font-size: .95rem; line-height: 1.75; margin-bottom: 2rem; }
+    .contact-item {
+      display: flex; gap: 1rem; align-items: flex-start;
+      margin-bottom: 1.25rem;
+    }
+    .ci-icon { width: 22px; height: 22px; color: var(--navy); flex-shrink: 0; margin-top: 3px; }
+    .ci-label { font-size: .82rem; font-weight: 700; color: var(--text); margin-bottom: .2rem; }
+    .ci-val { font-size: .9rem; color: var(--navy); text-decoration: underline; }
+    .contact-item a { color: var(--navy); text-decoration: underline; font-size: .9rem; }
+
+    /* ── FOOTER ──────────────────────────────── */
+    footer {
+      background: var(--navy-dark);
+      color: rgba(255,255,255,.55);
+      padding: 2.5rem 5vw;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .foot-brand .logo { color: rgba(255,255,255,.9); font-size: 1.5rem; }
+    .foot-brand p { font-size: .84rem; margin-top: .2rem; }
+
+    .foot-links {
+      display: flex; align-items: center; gap: 1.75rem;
+      font-size: .84rem;
+    }
+    .foot-links a { color: rgba(255,255,255,.55); text-decoration: none; transition: color .2s; }
+    .foot-links a:hover { color: var(--white); }
+
+    /* ── MOBILE ──────────────────────────────── */
+    @media (max-width: 900px) {
+      section, .quote-section { padding: 4.5rem 5vw; }
+      .dual-cards, .evol-intro, .ueber-grid, .kontakt-grid { grid-template-columns: 1fr; }
+      .evol-img { order: 0; }
+      .steps { grid-template-columns: repeat(2, 1fr); }
+      .pillars { grid-template-columns: 1fr; }
+      .pillar.wide { flex-direction: column; }
+      footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+      .values-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      nav ul { display: none; }
+      .steps { grid-template-columns: 1fr; }
+      .values-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ════════════════════════════════════ -->
+<header id="site-header">
+  <a href="#" class="logo">AVS<span>.</span></a>
+  <nav>
+    <ul>
+      <li><a href="#ansatz">Ansatz</a></li>
+      <li><a href="#leistungen">Leistungen</a></li>
+      <li><a href="#ueber">Über mich</a></li>
+      <li><a href="#kontakt">Kontakt</a></li>
+      <li><button class="lang">DE</button></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- ═══ HERO ══════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="label">Alexey von Schlippe</div>
+    <h1>HR System<br>Coach</h1>
+    <p>Als systemischer Coach, Team- und Organisationsentwickler biete ich professionelle Begleitung bei Entwicklungsprozessen – wertschätzend, klar, lösungsorientiert.</p>
+    <a href="#kontakt" class="btn">Kontakt aufnehmen</a>
+  </div>
+</section>
+
+<!-- ═══ QUOTE ══════════════════════════════════════ -->
+<div class="quote-section">
+  <blockquote>
+    Ich arbeite mit HR-Teams und Führungskräften, die sich wirklich verändern wollen, um ihr volles Potenzial zu entfalten und moderne Personalarbeit proaktiv zu gestalten.
+  </blockquote>
+</div>
+
+<!-- ═══ WEG / HIN ══════════════════════════════════ -->
+<section class="weg-section" id="ansatz">
+  <div class="label">Weg von … Hin zu</div>
+  <h2>Gemeinsam auf die Reise zu Klarheit</h2>
+  <p class="sect-desc">HR-Abteilungen bewegen sich in einem Spannungsfeld aus steigenden Anforderungen, wirtschaftlichem Druck und begrenzten Ressourcen. Bei wachsender Komplexität bleiben interne Ziele, Strukturen und Zusammenarbeit häufig auf der Strecke.</p>
+  <div class="dual-cards">
+    <div class="card-from">
+      <h3>Weg von</h3>
+      <ul class="dot-list">
+        <li>Unerreichten Zielen</li>
+        <li>Unklaren Strukturen</li>
+        <li>Überfrachteten Prozessen</li>
+        <li>Überlasteten Führungskräften</li>
+        <li>Frustrierten Mitarbeitenden</li>
+      </ul>
+    </div>
+    <div class="card-to">
+      <h3>Hin zu</h3>
+      <ul class="dot-list">
+        <li>Effektivität durch klare Strategie &amp; erreichbare Ziele</li>
+        <li>Effizienz durch klare, digitale Prozesse</li>
+        <li>Flexibilität durch geschaffene Freiräume</li>
+        <li>Entlasteten Führungskräften</li>
+        <li>Höherer Mitarbeiterzufriedenheit &amp; Teamperformance</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HR EVOLUTION ════════════════════════════════ -->
+<section class="evolution-section">
+  <div class="evol-intro">
+    <div class="evol-text">
+      <div class="label">Der Ansatz</div>
+      <h2>HR Evolution</h2>
+      <p class="sect-desc">Wirkliche Entwicklung entsteht erst, wenn Ziele, Prozesse und Zusammenarbeit bewusst miteinander verzahnt werden. Ich arbeite mit einem ganzheitlichen Ansatz, der genau diese drei Ebenen verbindet und Klarheit erzeugt.</p>
+    </div>
+    <img class="evol-img"
+         src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80"
+         alt="HR Evolution Coaching">
+  </div>
+
+  <div class="pillars">
+    <div class="pillar">
+      <div class="pillar-label">1. Klare Ziele &amp; Ausrichtung</div>
+      <!-- Target icon -->
+      <svg class="pillar-icon" viewBox="0 0 56 56" fill="none" stroke="#1E3A5F" stroke-width="1.5" stroke-linecap="round">
+        <circle cx="28" cy="28" r="20"/><circle cx="28" cy="28" r="13"/><circle cx="28" cy="28" r="6"/>
+        <line x1="28" y1="2" x2="28" y2="10"/><line x1="32" y1="24" x2="28" y2="28"/><line x1="38" y1="18" x2="32" y2="24"/>
+      </svg>
+      <a href="#" class="pillar-cta">Entdecken →</a>
+    </div>
+    <div class="pillar">
+      <div class="pillar-label">2. Zusammenarbeit &amp; Führung</div>
+      <!-- People icon -->
+      <svg class="pillar-icon" viewBox="0 0 56 56" fill="none" stroke="#1E3A5F" stroke-width="1.5" stroke-linecap="round">
+        <circle cx="20" cy="20" r="7"/><path d="M6 46c0-7.7 6.3-14 14-14"/>
+        <circle cx="36" cy="20" r="7"/><path d="M50 46c0-7.7-6.3-14-14-14"/>
+        <path d="M20 32c2.3-.9 4.9-1.4 7-1.4s4.7.5 7 1.4"/><path d="M22 46c0-6.6 2.7-12 6-12s6 5.4 6 12"/>
+      </svg>
+      <a href="#" class="pillar-cta">Entdecken →</a>
+    </div>
+    <div class="pillar">
+      <div class="pillar-label">3. Strukturen &amp; Prozesse</div>
+      <!-- Org chart icon -->
+      <svg class="pillar-icon" viewBox="0 0 56 56" fill="none" stroke="#1E3A5F" stroke-width="1.5" stroke-linecap="round">
+        <rect x="20" y="4" width="16" height="12" rx="2"/>
+        <rect x="4" y="38" width="16" height="12" rx="2"/>
+        <rect x="36" y="38" width="16" height="12" rx="2"/>
+        <line x1="28" y1="16" x2="28" y2="27"/>
+        <line x1="12" y1="27" x2="44" y2="27"/>
+        <line x1="12" y1="27" x2="12" y2="38"/>
+        <line x1="44" y1="27" x2="44" y2="38"/>
+      </svg>
+      <a href="#" class="pillar-cta">Entdecken →</a>
+    </div>
+    <div class="pillar wide">
+      <!-- Diamond icon -->
+      <svg class="pillar-icon" viewBox="0 0 56 56" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="28,6 50,20 50,36 28,50 6,36 6,20"/>
+        <line x1="28" y1="6" x2="28" y2="50"/>
+        <line x1="6" y1="20" x2="50" y2="36"/>
+        <line x1="50" y1="20" x2="6" y2="36"/>
+      </svg>
+      <div>
+        <div class="pillar-label">4. Was sich durch HR Evolution verändert</div>
+        <a href="#" class="pillar-cta">Entdecken →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ VORGEHENSWEISE ══════════════════════════════ -->
+<section class="process-section">
+  <div class="label">Vorgehensweise</div>
+  <h2>In vier Schritten gemeinsam weiter</h2>
+  <p class="sect-desc">Mit HR Evolution entwickeln wir Ihre HR-Arbeit gezielt weiter. Die Zusammenarbeit erfolgt in einem strukturierten Prozess, der auf Ihre Situation abgestimmt ist.</p>
+
+  <div class="steps">
+    <div>
+      <div class="step-num">01</div>
+      <div class="step-title">Klare Ziele &amp; Ausrichtung</div>
+      <p class="step-body">HR-Teams, die auch bei begrenzten Ressourcen wirksam bleiben</p>
+    </div>
+    <div>
+      <div class="step-num">02</div>
+      <div class="step-title">Ziele klären &amp; ausrichten</div>
+      <p class="step-body">Wir schärfen Ihre Ziele und bringen sie in klaren Zusammenhang mit Ihrer Organisation.</p>
+    </div>
+    <div>
+      <div class="step-num">03</div>
+      <div class="step-title">Schwerpunkte definieren</div>
+      <p class="step-body">Wir leiten konkrete Entwicklungsschwerpunkte ab – nach dem, was Sie wirklich brauchen.</p>
+    </div>
+    <div>
+      <div class="step-num">04</div>
+      <div class="step-title">Umsetzung verankern</div>
+      <p class="step-body">Ich begleite Sie, Maßnahmen umzusetzen und nachhaltig im Alltag zu verankern.</p>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-dot"></div><div class="tl-line"></div>
+    <div class="tl-dot"></div><div class="tl-line"></div>
+    <div class="tl-dot"></div><div class="tl-line"></div>
+    <div class="tl-dot"></div><div class="tl-line"></div>
+    <div class="tl-arrow"></div>
+  </div>
+</section>
+
+<!-- ═══ LEISTUNGEN ══════════════════════════════════ -->
+<section class="leistungen-section" id="leistungen">
+  <div class="label">Leistungen</div>
+  <h2>Methoden &amp; Formate, die ineinandergreifen</h2>
+  <p class="sect-desc">Je nach Bedarf nutze ich unterschiedliche Methoden und Formate, die sich sinnvoll ergänzen und ineinandergreifen.</p>
+
+  <div class="accordion">
+    <div class="acc-item">
+      <button class="acc-btn" onclick="toggleAcc(this)">
+        Systemisches Coaching von Fach- &amp; Führungskräften
+        <span class="acc-icon">+</span>
+      </button>
+      <div class="acc-body">Individuelles Coaching für Fach- und Führungskräfte, das systemische Perspektiven nutzt, um Klarheit, Handlungsfähigkeit und persönliche Wirksamkeit zu stärken.</div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-btn" onclick="toggleAcc(this)">
+        Teamentwicklung und Zusammenarbeit
+        <span class="acc-icon">+</span>
+      </button>
+      <div class="acc-body">Workshops und Begleitprozesse, die Teams dabei unterstützen, ihre Zusammenarbeit zu reflektieren, gemeinsame Ziele zu entwickeln und die Kooperation nachhaltig zu verbessern.</div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-btn" onclick="toggleAcc(this)">
+        Struktur- und Prozessentwicklung
+        <span class="acc-icon">+</span>
+      </button>
+      <div class="acc-body">Analyse und Optimierung von HR-Strukturen und -Prozessen, um Effizienz zu steigern und die Organisation für zukünftige Anforderungen zu rüsten.</div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-btn" onclick="toggleAcc(this)">
+        Begleitung von Veränderungsprozessen
+        <span class="acc-icon">+</span>
+      </button>
+      <div class="acc-body">Professionelle Unterstützung bei organisatorischen Transformationen – von der Konzeption bis zur Implementierung, mit besonderem Fokus auf Akzeptanz und Nachhaltigkeit.</div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-btn" onclick="toggleAcc(this)">
+        Konfliktklärung und Mediation
+        <span class="acc-icon">+</span>
+      </button>
+      <div class="acc-body">Strukturierte Verfahren zur Klärung von Konflikten auf Team- und Organisationsebene, mit dem Ziel konstruktiver Lösungen und gestärkter Arbeitsbeziehungen.</div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-btn" onclick="toggleAcc(this)">
+        Trainings
+        <span class="acc-icon">+</span>
+      </button>
+      <div class="acc-body">Maßgeschneiderte Trainingsformate zu Führung, Kommunikation, Zusammenarbeit und HR-Kernthemen – praxisnah und auf den Alltag Ihrer Organisation zugeschnitten.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA BANNER ══════════════════════════════════ -->
+<div class="cta-banner">
+  <div>
+    <h3>Sind Sie bereit für die HR Evolution?</h3>
+    <a href="#kontakt" class="btn btn-solid">Erstgespräch anfragen</a>
+  </div>
+</div>
+
+<!-- ═══ ÜBER MICH ════════════════════════════════════ -->
+<section class="ueber-section" id="ueber">
+  <div class="label">Über mich</div>
+  <h2>Alexey von Schlippe</h2>
+  <div class="ueber-grid">
+    <img class="ueber-img"
+         src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=700&q=80"
+         alt="Alexey von Schlippe">
+    <div class="ueber-text">
+      <p>Als systemischer Coach, Team- und Organisationsentwickler biete ich professionelle Begleitung bei Entwicklungsprozessen – wertschätzend, klar, lösungsorientiert.</p>
+      <p>Meine Erfahrung basiert auf unterschiedlichen Rollen im Bereich Personal-, Team- und Organisationsentwicklung. Diese habe ich in unterschiedlichen Unternehmen eingebracht, vom Mittelstand bis zum Großkonzern.</p>
+      <p>Im Umgang mit Menschen verschiedener Kulturen und Herkünfte fühle ich mich durch das Arbeiten in internationalen Organisationen sowie durch meinen multikulturellen Hintergrund sehr wohl.</p>
+      <a href="https://linkedin.com" class="linkedin-link">Zu meinem LinkedIn →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WERTE ════════════════════════════════════════ -->
+<section class="werte-section">
+  <div class="label">Meine Werte</div>
+  <h2>Woran sich meine Arbeit ausrichtet</h2>
+  <p class="sect-desc">Im Vordergrund meiner Arbeit stehen für mich neben klar erreichten Zielen die agilen Werte, eine Hands-on-Mentalität sowie Spaß in der Zusammenarbeit.</p>
+
+  <div class="values-grid">
+    <div class="value-card">
+      <svg class="value-icon" viewBox="0 0 52 52" fill="none" stroke="#1E3A5F" stroke-width="1.4" stroke-linecap="round">
+        <rect x="6" y="6" width="16" height="16" rx="3"/>
+        <rect x="30" y="6" width="16" height="16" rx="3"/>
+        <rect x="6" y="30" width="16" height="16" rx="3"/>
+        <rect x="30" y="30" width="16" height="16" rx="3"/>
+      </svg>
+      <div class="value-title">Individuelle Lösungen statt Standardansätze</div>
+      <p class="value-desc">Jede Organisation ist anders – deshalb erarbeiten wir individuelle Lösungen, die wirklich passen.</p>
+    </div>
+    <div class="value-card">
+      <svg class="value-icon" viewBox="0 0 52 52" fill="none" stroke="#1E3A5F" stroke-width="1.4" stroke-linecap="round">
+        <rect x="8" y="10" width="36" height="26" rx="3"/>
+        <line x1="16" y1="20" x2="36" y2="20"/>
+        <line x1="16" y1="26" x2="28" y2="26"/>
+        <circle cx="40" cy="38" r="9" fill="white" stroke="#1E3A5F"/>
+        <polyline points="36,38 39,41 44,35"/>
+      </svg>
+      <div class="value-title">Wirksamkeit in Ihrem Alltag</div>
+      <p class="value-desc">Veränderungen müssen im täglichen Arbeiten tragen – sonst bringen sie nichts.</p>
+    </div>
+    <div class="value-card">
+      <svg class="value-icon" viewBox="0 0 52 52" fill="none" stroke="#1E3A5F" stroke-width="1.4" stroke-linecap="round">
+        <circle cx="26" cy="18" r="8"/>
+        <path d="M10 46c0-8.8 7.2-16 16-16s16 7.2 16 16"/>
+        <path d="M38 22a6 6 0 1 1 0-12"/><path d="M44 42c0-5.5-2.7-10-6-12"/>
+      </svg>
+      <div class="value-title">Verbindung von Mensch und Struktur</div>
+      <p class="value-desc">Nachhaltige Veränderung entsteht dort, wo Zusammenarbeit und Strukturen bewusst miteinander gestaltet werden.</p>
+    </div>
+    <div class="value-card">
+      <svg class="value-icon" viewBox="0 0 52 52" fill="none" stroke="#1E3A5F" stroke-width="1.4" stroke-linecap="round">
+        <circle cx="26" cy="26" r="20"/>
+        <path d="M18 26l6 6 10-10"/>
+      </svg>
+      <div class="value-title">Aufbau auf Bestehendem</div>
+      <p class="value-desc">Keine Konzepte von außen, sondern gezielte Weiterentwicklung Ihrer vorhandenen Strukturen.</p>
+    </div>
+    <div class="value-card" style="grid-column: 2">
+      <svg class="value-icon" viewBox="0 0 52 52" fill="none" stroke="#1E3A5F" stroke-width="1.4" stroke-linecap="round">
+        <circle cx="26" cy="15" r="7"/>
+        <path d="M14 44c0-6.6 5.4-12 12-12s12 5.4 12 12"/>
+        <line x1="26" y1="28" x2="26" y2="36"/>
+        <line x1="22" y1="34" x2="30" y2="34"/>
+        <path d="M20 26c-6 1-8 4-8 8"/>
+        <path d="M32 26c6 1 8 4 8 8"/>
+      </svg>
+      <div class="value-title">Befähigung statt Abhängigkeit</div>
+      <p class="value-desc">Ziel ist, dass Sie selbstständig weiterarbeiten und sich entwickeln können.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ KONTAKT ══════════════════════════════════════ -->
+<section class="kontakt-section" id="kontakt">
+  <div class="label">Kontakt</div>
+  <h2>Lassen Sie uns ins Gespräch kommen</h2>
+  <div class="kontakt-grid">
+    <div>
+      <p class="form-hint">Felder, die mit * gekennzeichnet sind, sind Pflichtfelder.</p>
+      <div class="form-row">
+        <div class="form-group"><label>Vorname *</label><input type="text" placeholder="Vorname"></div>
+        <div class="form-group"><label>Name *</label><input type="text" placeholder="Name"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Position</label><input type="text" placeholder="Position"></div>
+        <div class="form-group"><label>Unternehmen *</label><input type="text" placeholder="Unternehmen"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Telefon</label><input type="tel" placeholder="+49 30 12345678"></div>
+        <div class="form-group"><label>E-Mail *</label><input type="email" placeholder="email@website.com"></div>
+      </div>
+      <div class="form-group">
+        <label>Ihr Anliegen</label>
+        <textarea placeholder="Geben Sie Ihre Nachricht ein..."></textarea>
+      </div>
+      <button class="btn-submit">Einreichen</button>
+    </div>
+
+    <div class="contact-sidebar">
+      <p>In einem unverbindlichen Erstgespräch schauen wir gemeinsam auf Ihre Situation und klären, ob und wie eine Zusammenarbeit sinnvoll sein kann.</p>
+
+      <div class="contact-item">
+        <svg class="ci-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.77a16 16 0 0 0 8.72 8.72l.86-.86a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        <div>
+          <div class="ci-label">Telefon</div>
+          <a href="tel:+493012345678" class="ci-val">+49 30 12345678</a>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <svg class="ci-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <div>
+          <div class="ci-label">Standort</div>
+          <span class="ci-val" style="text-decoration:none">Berlin, Germany</span>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <svg class="ci-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        <div>
+          <div class="ci-label">Email</div>
+          <a href="mailto:contact@vonschlippe.com" class="ci-val">contact@vonschlippe.com</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══════════════════════════════════════ -->
+<footer>
+  <div class="foot-brand">
+    <a href="#" class="logo">AVS<span style="color:var(--gold)">.</span></a>
+    <p>Alexey von Schlippe · HR-System Coach</p>
+  </div>
+  <div class="foot-links">
+    <a href="https://linkedin.com" aria-label="LinkedIn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(255,255,255,.65)">
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+        <rect x="2" y="9" width="4" height="12"/>
+        <circle cx="4" cy="4" r="2"/>
+      </svg>
+    </a>
+    <span>© 2026</span>
+    <a href="#">Impressum</a>
+    <a href="#">Datenschutz</a>
+  </div>
+</footer>
+
+<script>
+  // Accordion
+  function toggleAcc(btn) {
+    const item = btn.closest('.acc-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.acc-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // Header shadow on scroll
+  const hdr = document.getElementById('site-header');
+  window.addEventListener('scroll', () => {
+    hdr.classList.toggle('scrolled', window.scrollY > 10);
+  }, { passive: true });
+
+  // Active nav link
+  const sections = document.querySelectorAll('section[id], div.quote-section');
+  const navLinks = document.querySelectorAll('nav a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  document.querySelectorAll('section[id]').forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
